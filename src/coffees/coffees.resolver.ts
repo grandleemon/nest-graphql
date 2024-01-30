@@ -1,5 +1,5 @@
 import { Resolver, Query, Args, ID, Mutation } from "@nestjs/graphql";
-import { Coffee } from "./entities/coffee.entity/coffee.entity";
+import { Coffee } from "./entities/coffee.entity";
 import { ParseIntPipe } from "@nestjs/common";
 import { CreateCoffeeInput } from "./dto/create-coffee.input/create-coffee.input";
 import { CoffeesService } from "./coffees.service";
