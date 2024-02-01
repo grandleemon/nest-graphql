@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { CreateCoffeeInput } from "./dto/create-coffee.input/create-coffee.input";
+import { CreateCoffeeInput } from "./dto/create-coffee.input";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Coffee } from "./entities/coffee.entity";
 import { Repository } from "typeorm";
 import { UserInputError } from "@nestjs/apollo";
+import { UpdateCoffeeInput } from "./dto/update-coffee.input";
 
 @Injectable()
 export class CoffeesService {
@@ -29,5 +30,24 @@ export class CoffeesService {
   async create(createCoffeeInput: CreateCoffeeInput) {
     const coffee = this.coffeesRepository.create(createCoffeeInput);
     return this.coffeesRepository.save(coffee);
+  }
+
+  async update(id: number, updateCoffeeInput: UpdateCoffeeInput) {
+    const coffee = await this.coffeesRepository.preload({
+      id,
+      ...updateCoffeeInput,
+    });
+
+    if (!coffee) {
+      throw new UserInputError(`Coffee ${id} does not exist`);
+    }
+
+    return this.coffeesRepository.save(coffee);
+  }
+
+  async delete(id: number) {
+    const coffee = await this.findOne(id);
+
+    return this.coffeesRepository.remove(coffee);
   }
 }
